@@ -11,7 +11,7 @@ class donate extends State<Donatescreenwidgets>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("These Is Donate Screen"),
+
     );
   }
 

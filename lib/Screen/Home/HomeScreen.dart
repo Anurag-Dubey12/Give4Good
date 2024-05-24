@@ -31,9 +31,9 @@ class homescreen extends State<Homescreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      appBar: AppBar(
-        title: Text('Give4Goods',style: TextStyle(color: Colors.black),),
-      ),
+      // appBar: AppBar(
+      //   title: Text('Give4Goods',style: TextStyle(color: Colors.black),),
+      // ),
       backgroundColor: Colors.white,
       body: PageView.builder(
           itemCount: 4,
@@ -52,10 +52,11 @@ class homescreen extends State<Homescreen>{
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+          height: 50,
+          margin: EdgeInsets.symmetric(horizontal: 20,vertical: 30),
           decoration: BoxDecoration(
             color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(100)),
+              borderRadius: BorderRadius.all(Radius.circular(100)),
             boxShadow: [
               BoxShadow(
                 spreadRadius: -10,
@@ -98,9 +99,9 @@ class homescreen extends State<Homescreen>{
                   gap: 10,
                   icon: LineIcons.search,
                   iconColor: Colors.black,
-                  iconActiveColor: Colors.grey,
+                  iconActiveColor: Colors.black,
                   text: 'Fundraiser',
-                  textColor: Colors.grey,
+                  textColor: Colors.black,
                   backgroundColor: Colors.grey.withOpacity(0.2),
                   iconSize: 24,
                   padding: padding,

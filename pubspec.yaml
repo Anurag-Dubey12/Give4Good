@@ -48,10 +48,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.2.3
   smooth_page_indicator: ^1.1.0
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.2
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

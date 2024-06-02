@@ -94,7 +94,7 @@ class UserAuth extends State<Authscreen>{
               SizedBox(height: 15,),
               ElevatedButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Homescreen()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Homescreen()));
                   },
                   child: Text("Verify",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
                   style: ElevatedButton.styleFrom(

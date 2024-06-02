@@ -9,12 +9,10 @@ class Amountdonationscreen extends StatefulWidget {
 class DonationPage extends State<Amountdonationscreen>{
   String? image;
   String? title;
-  String? description;
   List<String>? tags;
   String? donationAmt;
   String? newmeals;
   double _currentSliderValue=60;
-  String amounterromsg='';
   final TextEditingController _newmealamt = TextEditingController();
   @override
   void initState() {
@@ -25,7 +23,6 @@ class DonationPage extends State<Amountdonationscreen>{
     setState(() {
       image = prefs.getString('image');
       title = prefs.getString('title');
-      description = prefs.getString('description');
       tags = prefs.getStringList('tags');
       donationAmt = prefs.getString('donationAmt');
     });
@@ -118,15 +115,12 @@ class DonationPage extends State<Amountdonationscreen>{
       }
     });
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
       ),
-      body:image == null || title == null || description == null || donationAmt == null
+      body:image == null || title == null || donationAmt == null
           ? Center(child:CircularProgressIndicator() ):
       SingleChildScrollView(
         child: Container(

@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class Amountdonationscreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => DonationPage();
@@ -14,10 +17,23 @@ class DonationPage extends State<Amountdonationscreen>{
   String? newmeals;
   double _currentSliderValue=60;
   final TextEditingController _newmealamt = TextEditingController();
+  late Razorpay razorpay;
+  TextEditingController amtcontroller=TextEditingController();
+
   @override
   void initState() {
     _loadDonationDetails();
+    razorpay=Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,handlePaymentSuccess );
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,handlePaymentError );
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,handleExternalWallet );
   }
+  @override
+  void dispose() {
+    super.dispose();
+    razorpay.clear();
+  }
+
   Future<void> _loadDonationDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -27,6 +43,35 @@ class DonationPage extends State<Amountdonationscreen>{
       donationAmt = prefs.getString('donationAmt');
     });
   }
+  void opencheckout(amount,name) async {
+    var contact=await FirebaseAuth.instance.currentUser!.phoneNumber;
+    var email=await FirebaseAuth.instance.currentUser!.email;
+    var options = {
+      'key': 'rzp_test_4CmdaLE9sYYEOA',
+      'amount': amount*100,
+      'name': name,
+      'description': 'Donation For People',
+      'prefill': {
+        'contact': contact,
+        'email': email
+      }
+    };
+    try{
+      razorpay.open(options);
+    }catch(e){
+      debugPrint('Error: $e');
+    }
+  }
+  void handlePaymentSuccess(PaymentSuccessResponse response){
+    Fluttertoast.showToast(msg: "Payment Successful ${response.paymentId}",toastLength: Toast.LENGTH_SHORT);
+  }
+  void handlePaymentError(PaymentFailureResponse response){
+    Fluttertoast.showToast(msg: "Payment Unsuccessful due to ${response.message}",toastLength: Toast.LENGTH_SHORT);
+  }
+  void handleExternalWallet(ExternalWalletResponse response){
+    Fluttertoast.showToast(msg: "External Wallet ${response.walletName}",toastLength: Toast.LENGTH_SHORT);
+  }
+
   void _showBottomSheet(BuildContext context) {
     String amountErrorMessage = '';
 
@@ -197,6 +242,7 @@ class DonationPage extends State<Amountdonationscreen>{
                 width: 250,
                 child: ElevatedButton(
                   onPressed: () {
+                    opencheckout(_currentSliderValue.toInt(),title);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.yellow,

@@ -1,7 +1,10 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:give4good/Screen/Donation/widgets/DonationWidget.dart';
+
 
 import '../Donation/widgets/DonationProgress.dart';
 
@@ -10,7 +13,8 @@ class Donatescreenwidgets extends StatefulWidget{
   State<StatefulWidget> createState() =>donate();
 
 }
-class donate extends State<Donatescreenwidgets>{
+class donate extends State<Donatescreenwidgets> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

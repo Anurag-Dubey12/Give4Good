@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:give4good/Screen/Auth/AuthScreen.dart';
-import 'package:give4good/Screen/Auth/AuthScreen.dart';
+import 'package:give4good/Screen/Auth/SignUp.dart';
+import 'package:give4good/Screen/Auth/SignUp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'Onboarding/Onboarding_items.dart';
@@ -29,11 +29,11 @@ class _IntroState extends State<Introscreen> {
                 onPressed: ()=>pageController.jumpToPage(controller.items.length-1),
                 child: Text("Skip",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16),)),
             SmoothPageIndicator(
-                controller: pageController,
-                count: controller.items.length,
-                onDotClicked: (index)=>pageController.animateToPage(index,
-                duration: Duration(microseconds: 600),curve: Curves.easeInCirc),
-                effect: WormEffect(
+              controller: pageController,
+              count: controller.items.length,
+              onDotClicked: (index)=>pageController.animateToPage(index,
+                  duration: Duration(microseconds: 600),curve: Curves.easeInCirc),
+              effect: WormEffect(
                   dotHeight: 12,
                   dotWidth: 12,
                   activeDotColor: Colors.purple
@@ -70,7 +70,7 @@ class _IntroState extends State<Introscreen> {
         ),
       ),
     );
-}
+  }
 
   Widget getStarted(){
     return Container(
@@ -83,9 +83,9 @@ class _IntroState extends State<Introscreen> {
       child: TextButton(
           onPressed: ()async{
             final pres = await SharedPreferences.getInstance();
-            pres.setBool("onboarding", true);
+            pres.setBool("SeenIntro", true);
             if(!mounted)return;
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Authscreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signup()));
           },
           child: const Text("Get started",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),)),
     );

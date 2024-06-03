@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "563321471920",
+    "project_id": "give4goods-7a166",
+    "storage_bucket": "give4goods-7a166.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563321471920:android:5ae0ccb882595fc7da0c75",
+        "android_client_info": {
+          "package_name": "com.example.give4good"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMS4-3hyISFV2YElw_vuzfMjcaaUYRkaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

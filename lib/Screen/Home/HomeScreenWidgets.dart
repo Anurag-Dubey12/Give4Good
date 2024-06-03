@@ -1,7 +1,8 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:give4good/Screen/Auth/Signin.dart';
 class Homescreenwidgets extends StatefulWidget{
   @override
   State<StatefulWidget> createState() =>home();
@@ -29,7 +30,7 @@ class home extends State<Homescreenwidgets>{
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                    children: <Widget>[
                     SizedBox(height: 16,),
                     Center(
                       child: Text("Filter Options" ,
@@ -265,26 +266,90 @@ class home extends State<Homescreenwidgets>{
             elevation: 2.0,
           ),
         ),
+        endDrawer: Container(
+          margin: EdgeInsets.only(bottom: 100,top: 30),
+          child: Drawer(
+            backgroundColor: Colors.white,
+            child: ListView(
+              children: <Widget>[
+               Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage('assets/images/logo.png'),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Anurag',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                ),
+              ),
+            ],
+          ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Home'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.list),
+                  title: Text('My Listings'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.account_circle),
+                  title: Text('Account'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.notifications),
+                  title: Text('Notification Settings'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.location_on),
+                  title: Text('Location'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.help),
+                  title: Text('About Us'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout_rounded),
+                  title: Text('Logout'),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content:Text("Logout Successfully")));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
         appBar: AppBar(
           title: Text("Give4Goods"),
           actions: [
-            IconButton(
-                onPressed: (){
-                },
-                icon: Icon(Icons.notifications)),
-            IconButton(
-                onPressed: (){
-                },
-                icon: Icon(Icons.search)),
-            IconButton(
-                onPressed: (){
-                },
-                icon: Icon(Icons.location_on)),
-            IconButton(
-                onPressed: (){
-                },
-                icon: Icon(Icons.menu)),
+            IconButton(onPressed: (){},icon: Icon(Icons.notifications)),
+            IconButton(onPressed: (){},icon: Icon(Icons.search)),
+            // IconButton(onPressed: (){},icon: Icon(Icons.location_on)),
+            Builder(builder: (context){
+              return IconButton(
+                  onPressed: (){
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  icon: Icon(Icons.menu));
+            })
+
           ],
+
           bottom: TabBar(
             indicatorColor: Colors.green,
             automaticIndicatorColorAdjustment: true,

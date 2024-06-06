@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'FirestoreService.dart';
 
 class AuthService {
@@ -38,7 +37,6 @@ class AuthService {
       );
     }
   }
-
   static Future<void> signinUser(String email, String password, BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);

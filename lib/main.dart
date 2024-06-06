@@ -9,13 +9,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: FirebaseOptions(
-        apiKey: "AIzaSyBf5sdBO2Cp1ATq5W0igKrHGKBharY0maA",
-        authDomain: "give4goods-7a166.firebaseapp.com",
-        projectId: "give4goods-7a166",
-        storageBucket: "give4goods-7a166.appspot.com",
-        messagingSenderId: "563321471920",
-        appId: "1:563321471920:web:9856e09742227b05da0c75",
-        measurementId: "G-RTTJS0Z24K"
+        apiKey: "AIzaSyA4MkV9EJ8Jpz6oQb8TJqigfDW4nOvTDoY",
+        authDomain: "give4good-90ed5.firebaseapp.com",
+        projectId: "give4good-90ed5",
+        storageBucket: "give4good-90ed5.appspot.com",
+        messagingSenderId: "742348535375",
+        appId: "1:742348535375:web:f75d644014ceac99511c3a",
+        measurementId: "G-612TL5VZ4L"
     )
   );
   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -4,10 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:give4good/Screen/Donation/widgets/DonationWidget.dart';
-
-
-import '../Donation/widgets/DonationProgress.dart';
-
 class Donatescreenwidgets extends StatefulWidget{
   @override
   State<StatefulWidget> createState() =>donate();

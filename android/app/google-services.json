@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "563321471920",
-    "project_id": "give4goods-7a166",
-    "storage_bucket": "give4goods-7a166.appspot.com"
+    "project_number": "742348535375",
+    "project_id": "give4good-90ed5",
+    "storage_bucket": "give4good-90ed5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:563321471920:android:5ae0ccb882595fc7da0c75",
+        "mobilesdk_app_id": "1:742348535375:android:1ceaa3f7ed4f9a36511c3a",
         "android_client_info": {
-          "package_name": "com.example.give4good"
+          "package_name": "com.example.give4goods"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "742348535375-ooh85u9d0g9et07hlgmd8505n5pm97jv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.give4goods",
+            "certificate_hash": "5c19b068d8bc7cd6aa641754ca0b71ad8c009456"
+          }
+        },
+        {
+          "client_id": "742348535375-oq27pvc1u5qnfp2tkj2vd5lildaf2uhf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBMS4-3hyISFV2YElw_vuzfMjcaaUYRkaY"
+          "current_key": "AIzaSyB-r9Qyoqr_WhnmbMmvLknNwx4c2VsBnyk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742348535375-oq27pvc1u5qnfp2tkj2vd5lildaf2uhf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

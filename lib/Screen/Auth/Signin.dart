@@ -16,7 +16,6 @@ class UserAuth extends State<Signin>{
   final _formkey=GlobalKey<FormState>();
   String email='';
   String password='';
-
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

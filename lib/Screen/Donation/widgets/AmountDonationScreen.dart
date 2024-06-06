@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,20 +15,23 @@ class DonationPage extends State<Amountdonationscreen>{
   String? title;
   List<String>? tags;
   String? donationAmt;
-  String? newmeals;
-  double _currentSliderValue=60;
+  double _currentSliderValue = 60;
+  double? _donationAmount;
+  bool _isCustomAmount = false;
   final TextEditingController _newmealamt = TextEditingController();
   late Razorpay razorpay;
-  TextEditingController amtcontroller=TextEditingController();
+  TextEditingController amtcontroller = TextEditingController();
 
   @override
   void initState() {
     _loadDonationDetails();
-    razorpay=Razorpay();
-    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,handlePaymentSuccess );
-    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,handlePaymentError );
-    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,handleExternalWallet );
+    razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+    super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -43,38 +47,71 @@ class DonationPage extends State<Amountdonationscreen>{
       donationAmt = prefs.getString('donationAmt');
     });
   }
-  void opencheckout(amount,name) async {
-    var contact=await FirebaseAuth.instance.currentUser!.phoneNumber;
-    var email=await FirebaseAuth.instance.currentUser!.email;
+  Future<void> storeTransactionDetails(String paymentId, int amount, String name, String userId) async {
+    CollectionReference transactions = FirebaseFirestore.instance.collection('transactions');
+    return transactions
+        .add({
+      'userId': userId,
+      'paymentId': paymentId,
+      'name': name,
+      'amount': amount,
+      'Date': FieldValue.serverTimestamp(),
+    }).then((value) =>   print({
+      'payment':paymentId,
+      'amount':amount,
+      'name':name,
+      'userid':userId
+    }))
+        .catchError((error) => print("Failed to add transaction: $error"));
+  }
+  void opencheckout(int amount, String? name) async {
+    var contact = await FirebaseAuth.instance.currentUser!.phoneNumber;
+    var email = await FirebaseAuth.instance.currentUser!.email;
     var options = {
       'key': 'rzp_test_4CmdaLE9sYYEOA',
-      'amount': amount*100,
+      'amount': amount * 100,
       'name': name,
       'description': 'Donation For People',
       'prefill': {
         'contact': contact,
-        'email': email
-      }
+        'email': email,
+      },
     };
-    try{
+    try {
       razorpay.open(options);
-    }catch(e){
+    } catch (e) {
       debugPrint('Error: $e');
     }
   }
-  void handlePaymentSuccess(PaymentSuccessResponse response){
-    Fluttertoast.showToast(msg: "Payment Successful ${response.paymentId}",toastLength: Toast.LENGTH_SHORT);
+
+  void handlePaymentSuccess(PaymentSuccessResponse response) {
+    String userid=FirebaseAuth.instance.currentUser!.uid;
+    // Fluttertoast.showToast(
+    //     msg: "Payment Successful for payment Id:${response.paymentId}",
+    //     toastLength: Toast.LENGTH_SHORT);
+    int amount=(_isCustomAmount ? _donationAmount : _currentSliderValue)!.toInt();
+    String name=title!;
+    storeTransactionDetails(response.paymentId!, amount, name, userid);
+
+    Fluttertoast.showToast(
+        msg: "Payment Successful ${response.paymentId}",
+        toastLength: Toast.LENGTH_SHORT);
   }
-  void handlePaymentError(PaymentFailureResponse response){
-    Fluttertoast.showToast(msg: "Payment Unsuccessful due to ${response.message}",toastLength: Toast.LENGTH_SHORT);
+
+  void handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "Payment Unsuccessful due to ${response.message}",
+        toastLength: Toast.LENGTH_SHORT);
   }
-  void handleExternalWallet(ExternalWalletResponse response){
-    Fluttertoast.showToast(msg: "External Wallet ${response.walletName}",toastLength: Toast.LENGTH_SHORT);
+
+  void handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "External Wallet ${response.walletName}",
+        toastLength: Toast.LENGTH_SHORT);
   }
 
   void _showBottomSheet(BuildContext context) {
     String amountErrorMessage = '';
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -95,7 +132,8 @@ class DonationPage extends State<Amountdonationscreen>{
                   Center(
                     child: Text(
                       '$title',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -115,7 +153,9 @@ class DonationPage extends State<Amountdonationscreen>{
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Your amount',
-                      errorText: amountErrorMessage,
+                      errorText: amountErrorMessage.isEmpty
+                          ? null
+                          : amountErrorMessage,
                     ),
                   ),
                   SizedBox(height: 16),
@@ -131,16 +171,25 @@ class DonationPage extends State<Amountdonationscreen>{
                       var newvalue = int.tryParse(_newmealamt.text) ?? 0;
                       if (newvalue < 60) {
                         setState(() {
-                          amountErrorMessage = "Donation Amount should be greater than 60";
+                          amountErrorMessage =
+                          "Donation Amount should be greater than 60";
                         });
                       } else {
+                        setState(() {
+                          amountErrorMessage = '';
+                          _donationAmount = newvalue.toDouble();
+                          _isCustomAmount = true;
+                        });
                         Navigator.pop(context, newvalue.toString());
                       }
                     },
                     child: Container(
                       width: double.infinity,
                       child: Text(
-                        'Confirm',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                        'Confirm',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -155,32 +204,39 @@ class DonationPage extends State<Amountdonationscreen>{
     ).then((newvalue) {
       if (newvalue != null) {
         setState(() {
-          _currentSliderValue = double.parse(newvalue);
+          _donationAmount = double.parse(newvalue);
+          _isCustomAmount = true;
         });
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
-      body:image == null || title == null || donationAmt == null
-          ? Center(child:CircularProgressIndicator() ):
-      SingleChildScrollView(
+      appBar: AppBar(),
+      body: image == null || title == null || donationAmt == null
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          margin: EdgeInsets.only(top: 15,left: 15,right: 15),
+          margin: EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Column(
             children: [
-              Text(title!,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 22),),
-              SizedBox(height: 15,),
+              Text(
+                title!,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22),
+              ),
+              SizedBox(height: 15),
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
                   image!,
                   width: 400,
-                  height:400,
+                  height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -190,22 +246,26 @@ class DonationPage extends State<Amountdonationscreen>{
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                // width: 150,
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                        '₹$_currentSliderValue',
-                        style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
-                      ),
+                      '₹${_isCustomAmount ? _donationAmount : _currentSliderValue}',
+                      style: TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
                     IconButton(
-                        onPressed: (){ _showBottomSheet(context);},
-                        icon:Icon(Icons.edit_rounded,color: Colors.blue,) )
+                        onPressed: () {
+                          _showBottomSheet(context);
+                        },
+                        icon: Icon(
+                          Icons.edit_rounded,
+                          color: Colors.blue,
+                        ))
                   ],
                 ),
               ),
-
-              SizedBox(height: 15,),
+              SizedBox(height: 15),
               Container(
                 width: 300,
                 child: SliderTheme(
@@ -216,33 +276,35 @@ class DonationPage extends State<Amountdonationscreen>{
                         trackHeight: 20,
                         minThumbSeparation: 20,
                         thumbShape: CustomSliderThumb(
-                            thumbRadius: 20,
-                            icon: Icons.food_bank
-                        ),
+                            thumbRadius: 20, icon: Icons.food_bank),
                         thumbColor: Colors.blue,
-                        overlayColor: Colors.blue.withAlpha(32),
-                        overlayShape: RoundSliderOverlayShape(overlayRadius: 28)
-                    ),
+                        overlayColor:
+                        Colors.blue.withAlpha(32),
+                        overlayShape: RoundSliderOverlayShape(
+                            overlayRadius: 28)),
                     child: Slider(
                       value: _currentSliderValue,
                       min: 60,
                       max: 15000,
-                      divisions: (150000 - 60) ~/ 60,
+                      divisions: (15000 - 60) ~/ 60,
                       label: _currentSliderValue.round().toString(),
-                      onChanged: (value){
+                      onChanged: (value) {
                         setState(() {
-                          _currentSliderValue = (value / 60).round() * 60;
+                          _currentSliderValue  =
+                              (value / 60).round() * 60;
+                          _isCustomAmount = false;
                         });
                       },
-                    )
-                ),
+                    )),
               ),
-              SizedBox(height: 15,),
+              SizedBox(height: 15),
               Container(
                 width: 250,
                 child: ElevatedButton(
                   onPressed: () {
-                    opencheckout(_currentSliderValue.toInt(),title);
+                    opencheckout(
+                        (_isCustomAmount ? _donationAmount : _currentSliderValue)!.toInt(),
+                        title);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.yellow,
@@ -250,11 +312,13 @@ class DonationPage extends State<Amountdonationscreen>{
                   ),
                   child: Text(
                     'Continue',
-                    style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -262,6 +326,7 @@ class DonationPage extends State<Amountdonationscreen>{
     );
   }
 }
+
 class CustomSliderThumb extends SliderComponentShape{
   late final double thumbRadius;
   late final IconData icon;

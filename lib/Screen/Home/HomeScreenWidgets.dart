@@ -248,6 +248,7 @@ class home extends State<Homescreenwidgets>{
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+
         extendBody: true,
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton:Padding(
@@ -336,6 +337,7 @@ class home extends State<Homescreenwidgets>{
         ),
         appBar: AppBar(
           title: Text("Give4Goods"),
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(onPressed: (){},icon: Icon(Icons.notifications)),
             IconButton(onPressed: (){},icon: Icon(Icons.search)),

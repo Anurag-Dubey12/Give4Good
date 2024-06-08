@@ -51,6 +51,10 @@ dependencies:
   flutter_svg: ^1.0.3
   flutter_polyline_points: ^2.0.0
   location: ^6.0.2
+  http:
+  flutter_typeahead:
+  intl: ^0.17.0
+
 
 dev_dependencies:
   flutter_test:

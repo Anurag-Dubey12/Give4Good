@@ -99,34 +99,7 @@ class UserAuth extends State<Signup>{
                         }
                       },
                     ),
-        
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     IconButton(
-                  //       onPressed: () {},
-                  //       icon: Image.asset("assets/images/facebook.png"),
-                  //     ),
-                      // IconButton(
-                      //   onPressed: () async {
-                      //     User? user = await _signInWithGoogle();
-                      //     if (user != null) {
-                      //       Navigator.pushReplacement(
-                      //         context,
-                      //         MaterialPageRoute(builder: (context) => Homescreen()),
-                      //       );
-                      //     } else {
-                      //       // Show error message or handle error
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //         SnackBar(content: Text('Sign in failed')),
-                      //       );
-                      //     }
-                      //   },
-                      //   icon: Image.asset("assets/images/google.png"),
-                      // ),
-                    // ],
-                  // ),
                   Text(
                     "Or Continue with email",
                     style: TextStyle(

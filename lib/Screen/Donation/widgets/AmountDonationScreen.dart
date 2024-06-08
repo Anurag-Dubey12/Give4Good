@@ -55,6 +55,7 @@ class DonationPage extends State<Amountdonationscreen>{
       'paymentId': paymentId,
       'name': name,
       'amount': amount,
+      'cause':'Donation',
       'Date': FieldValue.serverTimestamp(),
     }).then((value) =>   print({
       'payment':paymentId,

@@ -16,6 +16,7 @@ class donate extends State<Donatescreenwidgets> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Donation"),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

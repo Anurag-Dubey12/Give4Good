@@ -118,7 +118,7 @@ class homescreen extends State<Homescreen>{
         },
       ),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.only(bottom: 2),
+        // margin: EdgeInsets.only(bottom: 2),
         height: 70,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -144,6 +144,7 @@ class homescreen extends State<Homescreen>{
             topRight: Radius.circular(20.0),
           ),
           child: FlashyTabBar(
+            backgroundColor: Colors.teal,
             selectedIndex: _index,
             showElevation: true,
             onItemSelected: (index) {
@@ -155,14 +156,20 @@ class homescreen extends State<Homescreen>{
             items: [
               FlashyTabBarItem(
                 icon: Icon(Icons.home),
+                activeColor: Colors.white,
+                inactiveColor: Colors.black,
                 title: Text('Home'),
               ),
               FlashyTabBarItem(
                 icon: Icon(Icons.favorite),
+                activeColor: Colors.white,
+                inactiveColor: Colors.black,
                 title: Text('Donate'),
               ),
               FlashyTabBarItem(
                 icon: Icon(Icons.history),
+                activeColor: Colors.white,
+                inactiveColor: Colors.black,
                 title: Text('History'),
               ),
             ],

@@ -12,8 +12,11 @@ class donate extends State<Donatescreenwidgets> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text("Donation"),
+        centerTitle: true,
         automaticallyImplyLeading: false,
       ),
       body: Container(

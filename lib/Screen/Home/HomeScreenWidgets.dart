@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:give4good/Screen/Auth/Signin.dart';
 import 'package:give4good/Screen/Donation/widgets/DonationWidget.dart';
+import 'package:give4good/Screen/Donation/widgets/FundraiserCard.dart';
+import 'package:give4good/Screen/Donation/widgets/NGOsWidgets.dart';
 import 'package:give4good/Screen/Home/DonateScreenWidgets.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:line_icons/line_icons.dart';
@@ -255,14 +257,16 @@ class home extends State<Homescreenwidgets>{
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: Colors.white,
         extendBody: true,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton:Padding(
-          padding: const EdgeInsets.only(right: 15, bottom: 100),
+          padding: const EdgeInsets.only(bottom:60),
           child: FloatingActionButton(
             onPressed: () {
               _showBottomSheet(context);
             },
+            mini: true,
             foregroundColor: Colors.white,
             backgroundColor: Colors.black,
             hoverColor: Colors.purple,
@@ -342,30 +346,20 @@ class home extends State<Homescreenwidgets>{
           ),
         ),
         appBar: AppBar(
-          title: Text("Give4Goods"),
+          title: Text("Give4Goods",style: TextStyle(color: Colors.white),),
+          backgroundColor: Colors.teal,
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(onPressed: (){},icon: Icon(Icons.notifications)),
-            IconButton(onPressed: (){},icon: Icon(Icons.search)),
-            // IconButton(onPressed: (){},icon: Icon(Icons.location_on)),
+            IconButton(onPressed: (){},icon: Icon(Icons.notifications,color: Colors.white,)),
+            IconButton(onPressed: (){},icon: Icon(Icons.location_on,color: Colors.white,)),
             Builder(builder: (context){
               return IconButton(
                   onPressed: (){
                     Scaffold.of(context).openEndDrawer();
                   },
-                  icon: Icon(Icons.menu));
+                  icon: Icon(Icons.menu,color: Colors.white,));
             })
-
           ],
-
-          // bottom: TabBar(
-          //   indicatorColor: Colors.green,
-          //   automaticIndicatorColorAdjustment: true,
-          //   tabs: [
-          //     Tab(text: "Food",),
-          //     Tab(text: "Non-Food",)
-          //   ],
-          // ),
         ),
         body:SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -431,7 +425,7 @@ class home extends State<Homescreenwidgets>{
                 SizedBox(height: 30),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal:10),
-                  width:double.infinity,
+                  width: double.infinity,
                   // decoration: BoxDecoration(
                   //   borderRadius: BorderRadius.circular(10),
                   //   border: Border.all(
@@ -439,33 +433,33 @@ class home extends State<Homescreenwidgets>{
                   //     width: 2
                   //   ),
                   // ),
-                  child:  Row(
-                      children: [
-                        CategoryButton(
-                          icon: Icons.apps,
-                          label: 'Categories',
-                          onPressed: (){},
-                        ),
-                        SizedBox(width: 30,),
-                        CategoryButton(
-                          icon: Icons.checkroom,
-                          label: 'Clothes',
-                          onPressed: (){},
-                        ),
-                        SizedBox(width: 30,),
-                        CategoryButton(
-                          icon: Icons.fastfood,
-                          label: 'Food',
-                          onPressed: (){},
-                        ),
-                        SizedBox(width: 30,),
-                        CategoryButton(
-                          icon: Icons.book,
-                          label: 'Education',
-                          onPressed: (){},
-                        ),
-                      ],
-                    ),
+                  child: Row(
+                        children: [
+                          CategoryButton(
+                            icon: Icons.apps,
+                            label: 'Categories',
+                            onPressed: (){},
+                          ),
+                          SizedBox(width: 20,),
+                          CategoryButton(
+                            icon: Icons.checkroom,
+                            label: 'Clothes',
+                            onPressed: (){},
+                          ),
+                          SizedBox(width: 20,),
+                          CategoryButton(
+                            icon: Icons.fastfood,
+                            label: 'Food',
+                            onPressed: (){},
+                          ),
+                          SizedBox(width: 20,),
+                          CategoryButton(
+                            icon: Icons.book,
+                            label: 'Education',
+                            onPressed: (){},
+                          ),
+                        ],
+                      ),
                   ),
                 SizedBox(height: 10,),
                 Stack(
@@ -522,9 +516,9 @@ class home extends State<Homescreenwidgets>{
                 ),
                 SizedBox(height: 10),
                 ListTile(
-                  leading: Text("NGOs Near you",style: TextStyle(
+                  leading: Text("Helping NGOs ",style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold
                   ),),
                   trailing: Text("See all",
@@ -542,39 +536,136 @@ class home extends State<Homescreenwidgets>{
                  scrollDirection: Axis.horizontal,
                  child: Row(
                    children: [
-                     Donationwidget(
+                     Ngoswidgets(
                        image: "assets/images/hungry.jpg",
-                       title: "Yamen:Give Vital Aid",
-                       Donationamt: "500",
-                       tag: ["Nutrition", "Emercency"],
+                       NgoName: 'Smile Foundation',
+                       NgoLocation: 'Galaxy Tower,Lucknow',
+                       NgoRating: "4.5",
+                       tag: ["2.4km","Childern Charity"],
+                       onTap: (){},
                      ),
-                     Donationwidget(
+                     Ngoswidgets(
                        image: "assets/images/hungry.jpg",
-                       title: "Yamen:Give Vital Aid",
-                       Donationamt: "500",
-                       tag: ["Nutrition", "Emercency"],
+                       NgoName: 'AgeWell Foundation',
+                       NgoLocation: 'Galaxy Tower,Lucknow',
+                       NgoRating: "4.5",
+                       tag: ["2km","Old Age  Charity"],
+                       onTap: (){},
                      ),
-                     Donationwidget(
+                     Ngoswidgets(
                        image: "assets/images/hungry.jpg",
-                       title: "Yamen:Give Vital Aid",
-                       Donationamt: "500",
-                       tag: ["Nutrition", "Emercency"],
+                       NgoName: 'Well Goods Foundation',
+                       NgoLocation: 'Paradise Tower,Thane',
+                       NgoRating: "3.2",
+                       tag: ["5.6km","Cloths Charity"],
+                       onTap: (){},
                      ),
-                     Donationwidget(
+                     Ngoswidgets(
                        image: "assets/images/hungry.jpg",
-                       title: "Yamen:Give Vital Aid",
-                       Donationamt: "500",
-                       tag: ["Nutrition", "Emercency"],
+                       NgoName: 'NoWaste Foundation',
+                       NgoLocation: 'Fancy Park Tower,Delhi',
+                       NgoRating: "4.2",
+                       tag: ["2.4km","Books Charity"],
+                       onTap: (){},
                      ),
-                     Donationwidget(
+                     Ngoswidgets(
                        image: "assets/images/hungry.jpg",
-                       title: "Yamen:Give Vital Aid",
-                       Donationamt: "500",
-                       tag: ["Nutrition", "Emercency"],
+                       NgoName: 'Well Goods Foundation',
+                       NgoLocation: 'Paradise Tower,Thane',
+                       NgoRating: "3.2",
+                       tag: ["5.6km","Cloths Charity"],
+                       onTap: (){},
+                     ),
+                     Ngoswidgets(
+                       image: "assets/images/hungry.jpg",
+                       NgoName: 'AgeWell Foundation',
+                       NgoLocation: 'Galaxy Tower,Lucknow',
+                       NgoRating: "4.5",
+                       tag: ["2km","Old Age  Charity"],
+                       onTap: (){},
                      ),
                    ],
                  ),
-               )
+               ),
+                ListTile(
+                  leading: Text("Urgent Needs ",style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold
+                  ),),
+                  trailing: Text("See all",
+                    style: TextStyle(
+                        color: Colors.teal,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold
+                    ),),
+                  onTap: (){
+                    // Navigator.pushReplacement(
+                    //     context, MaterialPageRoute(builder: (BuildContext context)=>Donatescreenwidgets()));
+                  },
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                     FundraiserCard(
+                         image:  "assets/images/hungry.jpg",
+                         title: "Help for riyan Surgery",
+                         amountRaised: 4000,
+                         totalAmount: 40000,
+                         donors: 150,
+                         daysLeft: 3,
+                       onPressed: () {  },
+
+                     ),
+                      FundraiserCard(
+                          image:  "assets/images/hungry.jpg",
+                          title: "Help for riyan Surgery",
+                          amountRaised: 4000,
+                          totalAmount: 4000,
+                          donors: 150,
+                          daysLeft: 3,
+                        onPressed: () {  },
+                      ),
+                      FundraiserCard(
+                          image:  "assets/images/hungry.jpg",
+                          title: "Help for riyan Surgery",
+                          amountRaised: 4000,
+                          totalAmount: 4000,
+                          donors: 150,
+                          daysLeft: 3,
+                        onPressed: () {  },
+                      ),
+                      FundraiserCard(
+                          image:  "assets/images/hungry.jpg",
+                          title: "Help for riyan Surgery",
+                          amountRaised: 4000,
+                          totalAmount: 40000,
+                          donors: 150,
+                          daysLeft: 3,
+                        onPressed: () {  },
+                      ),
+                      FundraiserCard(
+                          image:  "assets/images/hungry.jpg",
+                          title: "Help for riyan Surgery",
+                          amountRaised: 4000,
+                          totalAmount: 4000,
+                          donors: 150,
+                          daysLeft: 3,
+                          onPressed: () {  },
+                      ),
+                      FundraiserCard(
+                          image:  "assets/images/hungry.jpg",
+                          title: "Help for riyan Surgery",
+                          amountRaised: 4000,
+                          totalAmount: 4000,
+                          donors: 150,
+                          daysLeft: 3,
+                        onPressed: () {  },
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

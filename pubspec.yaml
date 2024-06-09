@@ -54,7 +54,10 @@ dependencies:
   http:
   flutter_typeahead:
   intl: ^0.17.0
-
+  iconsax: ^0.0.8
+  get: ^4.6.6
+  water_drop_nav_bar: ^2.2.1
+  flashy_tab_bar2: ^0.0.10
 
 dev_dependencies:
   flutter_test:

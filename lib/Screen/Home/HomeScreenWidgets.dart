@@ -3,12 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:give4good/Screen/Auth/Signin.dart';
+import 'package:give4good/Screen/Donation/widgets/DonationWidget.dart';
+import 'package:give4good/Screen/Home/DonateScreenWidgets.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:line_icons/line_icons.dart';
+
 class Homescreenwidgets extends StatefulWidget{
   @override
   State<StatefulWidget> createState() =>home();
 
 }
 class home extends State<Homescreenwidgets>{
+  TextEditingController _searchController=TextEditingController();
+
   void _showBottomSheet(BuildContext context){
     String itemAddedBy = 'All';
     String itemAvailability = 'All';
@@ -248,7 +255,6 @@ class home extends State<Homescreenwidgets>{
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-
         extendBody: true,
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton:Padding(
@@ -352,24 +358,261 @@ class home extends State<Homescreenwidgets>{
 
           ],
 
-          bottom: TabBar(
-            indicatorColor: Colors.green,
-            automaticIndicatorColorAdjustment: true,
-            tabs: [
-              Tab(text: "Food",),
-              Tab(text: "Non-Food",)
-            ],
-          ),
+          // bottom: TabBar(
+          //   indicatorColor: Colors.green,
+          //   automaticIndicatorColorAdjustment: true,
+          //   tabs: [
+          //     Tab(text: "Food",),
+          //     Tab(text: "Non-Food",)
+          //   ],
+          // ),
         ),
-        body: TabBarView(
-          children: [
-            FoodTabContent(),
-            NonFoodTabContent(),
-          ],
+        body:SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            margin: EdgeInsets.only(left: 10,bottom:100,right: 10),
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      width: 400,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.search, color: Colors.grey),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    controller: _searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search NGO Here',
+                                      border: InputBorder.none,
+                                    ),
+                                    onChanged: (value) {},
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // ListView.builder(
+                          //   shrinkWrap: true,
+                          //   itemCount: 2,
+                          //   itemBuilder: (context, index) {
+                          //     return ListTile(
+                          //       title: Text(''),
+                          //       onTap: () {
+                          //         // _selectPrediction(_placePredictions[index]['place_id']);
+                          //       },
+                          //     );
+                          //   },
+                          // ),
+                        ],
+
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal:10),
+                  width:double.infinity,
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   border: Border.all(
+                  //     color: Colors.grey,
+                  //     width: 2
+                  //   ),
+                  // ),
+                  child:  Row(
+                      children: [
+                        CategoryButton(
+                          icon: Icons.apps,
+                          label: 'Categories',
+                          onPressed: (){},
+                        ),
+                        SizedBox(width: 30,),
+                        CategoryButton(
+                          icon: Icons.checkroom,
+                          label: 'Clothes',
+                          onPressed: (){},
+                        ),
+                        SizedBox(width: 30,),
+                        CategoryButton(
+                          icon: Icons.fastfood,
+                          label: 'Food',
+                          onPressed: (){},
+                        ),
+                        SizedBox(width: 30,),
+                        CategoryButton(
+                          icon: Icons.book,
+                          label: 'Education',
+                          onPressed: (){},
+                        ),
+                      ],
+                    ),
+                  ),
+                SizedBox(height: 10,),
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        "assets/images/hungry.jpg",
+                        width: 400,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "We can do \nsmall things with great love",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "See Active Campaigns",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.teal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                ListTile(
+                  leading: Text("NGOs Near you",style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold
+                  ),),
+                  trailing: Text("See all",
+                    style: TextStyle(
+                      color: Colors.teal,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold
+                    ),),
+                  onTap: (){
+                    // Navigator.pushReplacement(
+                    //     context, MaterialPageRoute(builder: (BuildContext context)=>Donatescreenwidgets()));
+                  },
+                ),
+               SingleChildScrollView(
+                 scrollDirection: Axis.horizontal,
+                 child: Row(
+                   children: [
+                     Donationwidget(
+                       image: "assets/images/hungry.jpg",
+                       title: "Yamen:Give Vital Aid",
+                       Donationamt: "500",
+                       tag: ["Nutrition", "Emercency"],
+                     ),
+                     Donationwidget(
+                       image: "assets/images/hungry.jpg",
+                       title: "Yamen:Give Vital Aid",
+                       Donationamt: "500",
+                       tag: ["Nutrition", "Emercency"],
+                     ),
+                     Donationwidget(
+                       image: "assets/images/hungry.jpg",
+                       title: "Yamen:Give Vital Aid",
+                       Donationamt: "500",
+                       tag: ["Nutrition", "Emercency"],
+                     ),
+                     Donationwidget(
+                       image: "assets/images/hungry.jpg",
+                       title: "Yamen:Give Vital Aid",
+                       Donationamt: "500",
+                       tag: ["Nutrition", "Emercency"],
+                     ),
+                     Donationwidget(
+                       image: "assets/images/hungry.jpg",
+                       title: "Yamen:Give Vital Aid",
+                       Donationamt: "500",
+                       tag: ["Nutrition", "Emercency"],
+                     ),
+                   ],
+                 ),
+               )
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+}
+class CategoryButton extends StatelessWidget{
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+
+  CategoryButton({required this.label,required this.icon,required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: Colors.teal,
+          child: IconButton(
+            icon: Icon(
+              icon,
+              color: Colors.white,
+              size: 30,
+            ),
+            onPressed: () {
+              // Handle button press
+            },
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(label),
+      ],
+    );
+  }
+
 }
 class FoodTabContent extends StatelessWidget{
   @override

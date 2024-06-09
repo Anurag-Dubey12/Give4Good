@@ -1,3 +1,4 @@
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,45 +8,39 @@ import 'package:give4good/Screen/Donation/WantedScreen.dart';
 import 'package:give4good/Screen/Home/HistoryScreen.dart';
 import 'package:give4good/Screen/Home/DonateScreenWidgets.dart';
 import 'package:give4good/Screen/Home/HomeScreenWidgets.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:get/get.dart';
+
 class Homescreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState()=>homescreen();
 }
 class homescreen extends State<Homescreen>{
-  var padding = EdgeInsets.symmetric(horizontal: 18, vertical: 5);
   int _index = 0;
-  List<Color> colors = [
-    Colors.purple,
-    Colors.pink,
-    Colors.blue,
-    Colors.teal
-  ];
   List<Widget> screens = [
     Homescreenwidgets(),
     Donatescreenwidgets(),
-    // Fundraiserscreenwidgets(),
     HistoryScreen()
   ];
   PageController controller = PageController();
 
-  void _showBottomSheet(BuildContext context){
+  void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor: Colors.white,
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return Padding(
-              padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 CategoryItem(
                   icon: Icons.local_dining,
                   iconColor: Colors.purple,
                   title: 'Food',
                   subtitle: 'Give away anything you would eat yourself',
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder:(context)=>Foodscreen()));
+                        MaterialPageRoute(builder: (context) => Foodscreen()));
                   },
                 ),
                 Divider(
@@ -58,9 +53,9 @@ class homescreen extends State<Homescreen>{
                   iconColor: Colors.pink,
                   title: 'Non-food',
                   subtitle: 'Give away toiletries, cosmetics, kitchen utensils, toys, clothes etc',
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder:(context)=>Nonfoodscreen()));
+                        MaterialPageRoute(builder: (context) => Nonfoodscreen()));
                   },
                 ),
                 Divider(
@@ -73,9 +68,9 @@ class homescreen extends State<Homescreen>{
                   iconColor: Colors.red,
                   title: 'Wanted',
                   subtitle: 'Ask for Something',
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder:(context)=>Wantedscreen()));
+                        MaterialPageRoute(builder: (context) => Wantedscreen()));
                   },
                 ),
               ],
@@ -83,11 +78,12 @@ class homescreen extends State<Homescreen>{
           );
         });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _index == 1
           ? Padding(
         padding: const EdgeInsets.only(right: 15, bottom: 15),
@@ -103,130 +99,108 @@ class homescreen extends State<Homescreen>{
           tooltip: 'Donate Items',
           child: Icon(Icons.add),
           elevation: 2.0,
+
         ),
       )
           : null,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: PageView.builder(
-        itemCount: 4,
+        itemCount: screens.length,
         controller: controller,
+        physics: NeverScrollableScrollPhysics(),
         onPageChanged: (page) {
           setState(() {
             _index = page;
           });
         },
         itemBuilder: (context, position) {
-          return Container(
-            color: colors[position],
-            child: Center(child: screens[position]),
-          );
+          return screens[position];
         },
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 50,
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(100)),
-            boxShadow: [
-              BoxShadow(
-                spreadRadius: -10,
-                blurRadius: 60,
-                color: Colors.black.withOpacity(0.4),
-                offset: Offset(0, 25),
-              )
-            ],
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.only(bottom: 2),
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+              color: Colors.grey,
+              width: 2,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-            child: GNav(
-              haptic: true,
-              curve: Curves.fastOutSlowIn,
-              duration: Duration(milliseconds: 900),
-              tabs: [
-                GButton(
-                  gap: 10,
-                  icon: LineIcons.home,
-                  iconColor: Colors.black,
-                  iconActiveColor: Colors.purple,
-                  text: 'Home',
-                  textColor: Colors.purple,
-                  backgroundColor: Colors.purple.withOpacity(0.2),
-                  iconSize: 24,
-                  padding: padding,
-                ),
-                GButton(
-                  gap: 10,
-                  icon: LineIcons.donate,
-                  iconColor: Colors.black,
-                  iconActiveColor: Colors.pink,
-                  text: 'Donate',
-                  textColor: Colors.pink,
-                  backgroundColor: Colors.pink.withOpacity(0.2),
-                  iconSize: 24,
-                  padding: padding,
-                ),
-                // GButton(
-                //   gap: 10,
-                //   icon: LineIcons.search,
-                //   iconColor: Colors.black,
-                //   iconActiveColor: Colors.black,
-                //   text: 'Fundraiser',
-                //   textColor: Colors.black,
-                //   backgroundColor: Colors.grey.withOpacity(0.2),
-                //   iconSize: 24,
-                //   padding: padding,
-                // ),
-                GButton(
-                  gap: 10,
-                  icon: LineIcons.history,
-                  iconColor: Colors.black,
-                  iconActiveColor: Colors.teal,
-                  text: 'History',
-                  textColor: Colors.teal,
-                  backgroundColor: Colors.teal.withOpacity(0.2),
-                  iconSize: 24,
-                  padding: padding,
-                ),
-              ],
-              selectedIndex: _index,
-              onTabChange: (index) {
-                setState(() {
-                  _index = index;
-                });
-                controller.jumpToPage(index);
-              },
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(50.0),
+            topRight: Radius.circular(50.0),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 5,
+              blurRadius: 10,
             ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          child: FlashyTabBar(
+            selectedIndex: _index,
+            showElevation: true,
+            onItemSelected: (index) {
+              setState(() {
+                _index = index;
+              });
+              controller.jumpToPage(index);
+            },
+            items: [
+              FlashyTabBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Home'),
+              ),
+              FlashyTabBarItem(
+                icon: Icon(Icons.favorite),
+                title: Text('Donate'),
+              ),
+              FlashyTabBarItem(
+                icon: Icon(Icons.history),
+                title: Text('History'),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
-class CategoryItem extends StatelessWidget{
+
+class CategoryItem extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+
   CategoryItem({
     required this.icon,
     required this.iconColor,
     required this.title,
     required this.subtitle,
     required this.onTap,
-});
+  });
+
   @override
   Widget build(BuildContext context) {
-   return ListTile(
-     leading: CircleAvatar(
-       backgroundColor: iconColor,
-       child: Icon(icon,color: Colors.white,),
-     ),
-     title: Text(title,style: TextStyle(fontWeight: FontWeight.bold)),
-     subtitle: Text(subtitle),
-     onTap: onTap,
-   );
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: iconColor,
+        child: Icon(
+          icon,
+          color: Colors.white,
+        ),
+      ),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(subtitle),
+      onTap: onTap,
+    );
   }
 }

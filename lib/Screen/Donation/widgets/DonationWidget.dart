@@ -1,8 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:give4good/Screen/Donation/widgets/AmountDonationScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class Donationwidget extends StatelessWidget{
   final String image;
   final String title;
@@ -45,7 +45,7 @@ class Donationwidget extends StatelessWidget{
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    title,
+                    title+"\n",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -78,15 +78,13 @@ class Donationwidget extends StatelessWidget{
             width: 200,
             child: ElevatedButton(
               onPressed: ()async {
-                SharedPreferences prefs=await SharedPreferences.getInstance();
-                await prefs.setString('image', image);
-                await prefs.setString('title', title);
-                await prefs.setStringList('tags', tag);
-                await prefs.setString('donationAmt', Donationamt);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Amountdonationscreen(),
+                    builder: (context) => Amountdonationscreen(
+                      image: image,
+                      title: title,
+                    ),
                   ),
                 );
               },

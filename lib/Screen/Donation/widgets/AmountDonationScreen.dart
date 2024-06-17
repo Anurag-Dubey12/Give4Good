@@ -2,11 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:give4good/Screen/Donation/widgets/CustomSliderThumb.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 class Amountdonationscreen extends StatefulWidget {
+  String? image;
+  String? title;
+  Amountdonationscreen({
+    required this.image,
+    required this.title,
+  });
   @override
   State<StatefulWidget> createState() => DonationPage();
 }
@@ -21,6 +28,7 @@ class DonationPage extends State<Amountdonationscreen>{
   final TextEditingController _newmealamt = TextEditingController();
   late Razorpay razorpay;
   TextEditingController amtcontroller = TextEditingController();
+
 
   @override
   void initState() {
@@ -41,35 +49,42 @@ class DonationPage extends State<Amountdonationscreen>{
   Future<void> _loadDonationDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      image = prefs.getString('image');
-      title = prefs.getString('title');
-      tags = prefs.getStringList('tags');
-      donationAmt = prefs.getString('donationAmt');
+      image=widget.image;
+      title=widget.title;
     });
   }
   Future<void> storeTransactionDetails(String paymentId, int amount, String name, String userId) async {
-    CollectionReference transactions = FirebaseFirestore.instance.collection('transactions');
-    return transactions
-        .add({
-      'userId': userId,
-      'paymentId': paymentId,
-      'name': name,
-      'amount': amount,
-      'cause':'Donation',
-      'Date': FieldValue.serverTimestamp(),
-    }).then((value) =>   print({
-      'payment':paymentId,
-      'amount':amount,
-      'name':name,
-      'userid':userId
-    }))
-        .catchError((error) => print("Failed to add transaction: $error"));
+    try {
+      CollectionReference transactions = FirebaseFirestore.instance.collection('transactions');
+      DocumentReference newTransactionRef = transactions.doc();
+
+      await newTransactionRef.set({
+        'userId': userId,
+        'paymentId': paymentId,
+        'name': name,
+        'amount': amount,
+        'cause': 'Donation',
+        'Date': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      print('Transaction added successfully: { '
+          'paymentId: $paymentId, '
+          'amount: $amount, '
+          'name: $name, '
+          'userId: $userId '
+          '}');
+
+    } catch (error) {
+      print("Failed to add transaction: $error");
+      throw Exception("Failed to add transaction: $error");
+    }
   }
+
   void opencheckout(int amount, String? name) async {
     var contact = await FirebaseAuth.instance.currentUser!.phoneNumber;
     var email = await FirebaseAuth.instance.currentUser!.email;
     var options = {
-      'key': 'rzp_test_4CmdaLE9sYYEOA',
+      'key': 'rzp_test_6ALJzRFk7QdVEe',
       'amount': amount * 100,
       'name': name,
       'description': 'Donation For People',
@@ -87,16 +102,13 @@ class DonationPage extends State<Amountdonationscreen>{
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
     String userid=FirebaseAuth.instance.currentUser!.uid;
-    // Fluttertoast.showToast(
-    //     msg: "Payment Successful for payment Id:${response.paymentId}",
-    //     toastLength: Toast.LENGTH_SHORT);
     int amount=(_isCustomAmount ? _donationAmount : _currentSliderValue)!.toInt();
     String name=title!;
     storeTransactionDetails(response.paymentId!, amount, name, userid);
-
     Fluttertoast.showToast(
         msg: "Payment Successful ${response.paymentId}",
         toastLength: Toast.LENGTH_SHORT);
+    Navigator.pop(context);
   }
 
   void handlePaymentError(PaymentFailureResponse response) {
@@ -132,7 +144,7 @@ class DonationPage extends State<Amountdonationscreen>{
                   SizedBox(height: 16),
                   Center(
                     child: Text(
-                      '$title',
+                      '${widget.title}',
                       style: TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -166,7 +178,7 @@ class DonationPage extends State<Amountdonationscreen>{
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      overlayColor: Colors.black,
+                      // overlayColor: Colors.black,
                     ),
                     onPressed: () {
                       var newvalue = int.tryParse(_newmealamt.text) ?? 0;
@@ -216,7 +228,7 @@ class DonationPage extends State<Amountdonationscreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: image == null || title == null || donationAmt == null
+      body: widget.image == null || widget.title == null
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Container(
@@ -225,7 +237,7 @@ class DonationPage extends State<Amountdonationscreen>{
           child: Column(
             children: [
               Text(
-                title!,
+                widget.title!,
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -235,7 +247,7 @@ class DonationPage extends State<Amountdonationscreen>{
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  image!,
+                  widget.image!,
                   width: 400,
                   height: 400,
                   fit: BoxFit.cover,
@@ -328,49 +340,3 @@ class DonationPage extends State<Amountdonationscreen>{
   }
 }
 
-class CustomSliderThumb extends SliderComponentShape{
-  late final double thumbRadius;
-  late final IconData icon;
-  CustomSliderThumb({required this.thumbRadius,required this.icon});
-  @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(thumbRadius);
-  }
-  @override
-  void paint(
-      PaintingContext context,
-      Offset center,
-      {required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow})
-  {
-    final Canvas canvas=context.canvas;
-    final paint=Paint()
-    ..color=sliderTheme.thumbColor!
-    ..style=PaintingStyle.fill;
-    canvas.drawCircle(center, thumbRadius, paint);
-final iconPainter=TextPainter(
-  text: TextSpan(
-    text: String.fromCharCode(icon.codePoint),
-    style: TextStyle(
-      fontSize: thumbRadius,
-      fontFamily: icon.fontFamily,
-      package: icon.fontPackage,
-      color: Colors.white,
-    ),
-  ),
-  textDirection: TextDirection.ltr
-);
-iconPainter.layout();
-iconPainter.paint(
-    canvas,
-    center-Offset(iconPainter.width/2.0,iconPainter.height/2.0));
-  }
-}

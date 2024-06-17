@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:give4good/Screen/Donation/widgets/DonationSucess.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
@@ -47,33 +48,40 @@ class wanted extends State<Wantedscreen>{
       });
     }
   }
-  Future<void> _StoreFoodsData() async{
-    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty || _images == null || _images!.isEmpty) {
+  Future<void> _StoreFoodsData() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All fields are required")));
+      return;
+    }else if(_images == null || _images!.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Provide The Image of an item")));
       return;
     }
     setState(() {
       _isuploading = true;
     });
-    try{
-      List<String> imageUrls=await _StoreImages();
-      await FirebaseFirestore.instance.collection('Foods')
-          .add({
+
+    try {
+      List<String> imageUrls = await _StoreImagesConcurrently();
+      await _firestore.collection('Wanted').doc(_DocId).set({
         'title': _titleController.text,
         'description': _descriptionController.text,
-        'quantity': _isOtherSelected ? int.tryParse(_otherQuantityController.text) : _selectedQuantity,
         'pickupInstructions': _pickupInstructionsController.text,
         'location': GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude),
         'images': imageUrls,
-        'listingDays': _listingDays,
         'createdAt': FieldValue.serverTimestamp(),
-        'User_Uid':_uid,
-        'Doc_Id':_DocId,
+        'User_Uid': _uid,
+        'Doc_Id': _DocId,
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Food data uploaded successfully")));
-      Navigator.pop(context);
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context)=>Donationsucess(
+            title: _titleController.text,
+            des:_descriptionController.text ,
+            Quantity: "${_isOtherSelected ? int.tryParse(_otherQuantityController.text) : _selectedQuantity}",
+            pickadd:_pickupInstructionsController.text ,
+          )));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to upload data :${e}")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to upload data: $e")));
     } finally {
       setState(() {
         _isuploading = false;
@@ -81,18 +89,16 @@ class wanted extends State<Wantedscreen>{
     }
   }
 
-  Future<List<String>> _StoreImages() async{
-    List<String> imageurl=[];
-    for (XFile image in _images!){
-      String Filename=image.name;
-      Reference storagereference=FirebaseStorage.instance
-          .ref().child("Wanted_Images").child(Filename);
-      UploadTask uploadTask=storagereference.putFile(File(image.path));
-      TaskSnapshot taskSnapshot=await uploadTask;
-      String imageUrls=await taskSnapshot.ref.getDownloadURL();
-      imageurl.add(imageUrls);
-    }
-    return imageurl;
+  Future<List<String>> _StoreImagesConcurrently() async {
+    List<Future<String>> uploadFutures = _images!.map((image) async {
+      String filename = image.name;
+      Reference storagereference = FirebaseStorage.instance.ref().child("Food_Images").child(filename);
+      UploadTask uploadTask = storagereference.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      return await taskSnapshot.ref.getDownloadURL();
+    }).toList();
+
+    return await Future.wait(uploadFutures);
   }
 
   Future<void> _pickimages()async{

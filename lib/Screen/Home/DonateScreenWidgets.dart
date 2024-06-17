@@ -62,15 +62,6 @@ class donate extends State<Donatescreenwidgets> {
                         Donationamt: "500",
                         tag: ["Nutrition", "Emercency"],
                       ),
-                      // DonationProgress(
-                      //   image: "assets/images/hungry.jpg",
-                      //   title: "Yamen:Give Vital Aid",
-                      //   tag: ["Nutrition", "Emercency"],
-                      //   TotalMeal: 20000,
-                      //   MealDonated: 1000,
-                      //   Percentage: 10,
-                      // ),
-                      // SizedBox(width: 15),
                     ],
                   ),
                 ),
@@ -160,6 +151,7 @@ class donate extends State<Donatescreenwidgets> {
                         tag: ["Climate Change"],
                       ),
                     ],
+
                   ),
                 )
               ],

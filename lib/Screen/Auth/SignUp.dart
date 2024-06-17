@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,7 @@ import 'package:give4good/Screen/Auth/Signin.dart';
 import 'package:give4good/Screen/Home/HomeScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class Signup extends StatefulWidget{
   @override
   State<StatefulWidget> createState()=>UserAuth();
@@ -287,6 +286,8 @@ class UserAuth extends State<Signup>{
                          context,
                          MaterialPageRoute(builder: (context) => Homescreen()),
                        );
+                       SharedPreferences prefs = await SharedPreferences.getInstance();
+                       prefs.setBool("SeenIntro", true);
                      }else{
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content:Text("Something went Wrong")));

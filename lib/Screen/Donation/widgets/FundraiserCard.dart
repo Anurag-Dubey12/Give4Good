@@ -1,7 +1,7 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'AmountDonationScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FundraiserCard extends StatelessWidget {
   final String image;
@@ -10,7 +10,7 @@ class FundraiserCard extends StatelessWidget {
   final double totalAmount;
   final int donors;
   final int daysLeft;
-  final VoidCallback onPressed;
+
   FundraiserCard({
     required this.image,
     required this.title,
@@ -18,7 +18,6 @@ class FundraiserCard extends StatelessWidget {
     required this.totalAmount,
     required this.donors,
     required this.daysLeft,
-    required this.onPressed,
   });
 
   @override
@@ -30,13 +29,6 @@ class FundraiserCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black12,
-        //     blurRadius: 6.0,
-        //     spreadRadius: 2.0,
-        //   ),
-        // ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,8 +87,21 @@ class FundraiserCard extends StatelessWidget {
           ),
           SizedBox(height: 8.0),
           ElevatedButton(
-            onPressed: onPressed,
-            child: Text('Donate Now',style: TextStyle(color: Colors.white),),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Amountdonationscreen(
+                    title: title,
+                    image: image,
+                  ),
+                ),
+              );
+            },
+            child: Text(
+              'Donate Now',
+              style: TextStyle(color: Colors.white),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,
               shape: RoundedRectangleBorder(
@@ -107,10 +112,24 @@ class FundraiserCard extends StatelessWidget {
           ),
           SizedBox(height: 8.0),
           OutlinedButton(
-            onPressed: onPressed,
-            child: Text('Know more',style: TextStyle(color: Colors.teal),),
+            onPressed: () async {
+              // SharedPreferences prefs=await SharedPreferences.getInstance();
+              // await prefs.setString('image', image);
+              // await prefs.setString('title', title);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => Amountdonationscreen(),
+              //   ),
+              // );
+            },
+            child: Text(
+              'Know more',
+              style: TextStyle(color: Colors.teal),
+            ),
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.teal, side: BorderSide(color: Colors.teal),
+              foregroundColor: Colors.teal,
+              side: BorderSide(color: Colors.teal),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
               ),

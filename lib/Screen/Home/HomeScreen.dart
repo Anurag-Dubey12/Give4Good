@@ -10,6 +10,8 @@ import 'package:give4good/Screen/Home/DonateScreenWidgets.dart';
 import 'package:give4good/Screen/Home/HomeScreenWidgets.dart';
 import 'package:get/get.dart';
 
+import '../Donation/widgets/CategoryItem.dart';
+
 class Homescreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState()=>homescreen();
@@ -62,16 +64,6 @@ class homescreen extends State<Homescreen>{
                   height: 1,
                   thickness: 1,
                   color: Colors.grey,
-                ),
-                CategoryItem(
-                  icon: Icons.speaker_phone,
-                  iconColor: Colors.red,
-                  title: 'Wanted',
-                  subtitle: 'Ask for Something',
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Wantedscreen()));
-                  },
                 ),
               ],
             ),
@@ -180,34 +172,3 @@ class homescreen extends State<Homescreen>{
   }
 }
 
-class CategoryItem extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  CategoryItem({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: iconColor,
-        child: Icon(
-          icon,
-          color: Colors.white,
-        ),
-      ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
-      onTap: onTap,
-    );
-  }
-}

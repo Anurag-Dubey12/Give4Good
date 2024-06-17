@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:give4good/Screen/Donation/NGODescription.dart';
 
 class Ngoswidgets extends StatelessWidget{
   final String image;
@@ -8,35 +9,43 @@ class Ngoswidgets extends StatelessWidget{
   final String NgoLocation;
   final String NgoRating;
   final List<String> tag;
-  final VoidCallback onTap;
+  final String about;
+  final String phonenumber;
+  final String mailid;
+
   Ngoswidgets({
    required this.image,
    required this.NgoName,
    required this.NgoLocation,
    required this.NgoRating,
    required this.tag,
-   required this.onTap,
+   required this.about,
+   required this.phonenumber,
+   required this.mailid,
+
 });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+        Navigator.push(context,
+        MaterialPageRoute(builder: (BuildContext context)=>Ngodescription(
+          image: image,
+          NGOName: NgoName,
+          Location: NgoLocation,
+          tags: tag,
+          Rating: NgoRating,
+          about:about,
+          phonenumber: phonenumber,
+          mailid: mailid,
+        )));
+      },
       child: Container(
         margin: EdgeInsets.only(left: 5,right: 5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10.0),
-          // border: Border.all(
-          //   color: Colors.teal
-          // )
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black12,
-          //     blurRadius: 6.0,
-          //     spreadRadius: 2.0,
-          //   ),
-          // ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,6 +74,7 @@ class Ngoswidgets extends StatelessWidget{
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(width: 6,),
                       Row(
                         children: [
                           Icon(

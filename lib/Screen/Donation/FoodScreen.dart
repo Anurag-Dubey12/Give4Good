@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:give4good/Screen/Donation/widgets/DonationSucess.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
@@ -45,33 +46,41 @@ class foodscreen extends State<Foodscreen>{
       });
     }
   }
-  Future<void> _StoreFoodsData() async{
-    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty || _images == null || _images!.isEmpty) {
+  Future<void> _StoreFoodsData() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All fields are required")));
+      return;
+    }else if(_images == null || _images!.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Provide The Image of an item")));
       return;
     }
     setState(() {
       _isuploading = true;
     });
-    try{
-     List<String> imageUrls=await _StoreImages();
-     await FirebaseFirestore.instance.collection('Foods')
-     .add({
-       'title': _titleController.text,
-       'description': _descriptionController.text,
-       'quantity': _isOtherSelected ? int.tryParse(_otherQuantityController.text) : _selectedQuantity,
-       'pickupInstructions': _pickupInstructionsController.text,
-       'location': GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude),
-       'images': imageUrls,
-       'listingDays': _listingDays,
-       'createdAt': FieldValue.serverTimestamp(),
-       'User_Uid':_uid,
-       'Doc_Id':_DocId,
-     });
-     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Food data uploaded successfully")));
-     Navigator.pop(context);
+
+    try {
+      List<String> imageUrls = await _StoreImagesConcurrently();
+      await _firestore.collection('Foods').doc(_DocId).set({
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'quantity': _isOtherSelected ? int.tryParse(_otherQuantityController.text) : _selectedQuantity,
+        'pickupInstructions': _pickupInstructionsController.text,
+        'location': GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude),
+        'images': imageUrls,
+        'createdAt': FieldValue.serverTimestamp(),
+        'User_Uid': _uid,
+        'Doc_Id': _DocId,
+      });
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context)=>Donationsucess(
+            title: _titleController.text,
+            des:_descriptionController.text ,
+            Quantity: "${_isOtherSelected ? int.tryParse(_otherQuantityController.text) : _selectedQuantity}",
+            pickadd:_pickupInstructionsController.text ,
+          )));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to upload data :${e}")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to upload data: $e")));
     } finally {
       setState(() {
         _isuploading = false;
@@ -79,18 +88,16 @@ class foodscreen extends State<Foodscreen>{
     }
   }
 
-  Future<List<String>> _StoreImages() async{
-    List<String> imageurl=[];
-    for (XFile image in _images!){
-      String Filename=image.name;
-      Reference storagereference=FirebaseStorage.instance
-          .ref().child("Food_Images").child(Filename);
-      UploadTask uploadTask=storagereference.putFile(File(image.path));
-      TaskSnapshot taskSnapshot=await uploadTask;
-      String imageUrls=await taskSnapshot.ref.getDownloadURL();
-      imageurl.add(imageUrls);
-    }
-    return imageurl;
+  Future<List<String>> _StoreImagesConcurrently() async {
+    List<Future<String>> uploadFutures = _images!.map((image) async {
+      String filename = image.name;
+      Reference storagereference = FirebaseStorage.instance.ref().child("Food_Images").child(filename);
+      UploadTask uploadTask = storagereference.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      return await taskSnapshot.ref.getDownloadURL();
+    }).toList();
+
+    return await Future.wait(uploadFutures);
   }
 
   Future<void> _pickimages()async{
@@ -295,7 +302,7 @@ class foodscreen extends State<Foodscreen>{
               TextField(
                 controller: _pickupInstructionsController,
                 decoration: InputDecoration(
-                  labelText: 'Pick-up instructions',
+                  labelText: 'Pick-up instructions and Address',
                   hintText: 'e.g. "Pick up today from 4-6pm. Please ring doorbell when here."',
                   border: OutlineInputBorder(),
                 ),
@@ -337,21 +344,6 @@ class foodscreen extends State<Foodscreen>{
                 ),
               ),
               SizedBox(height: 20),
-              ListTile(
-                title: Text('List for'),
-                trailing: _isListingDays ? Text('$_listingDays days',
-                  style: TextStyle(fontSize: 14),) :Text('5 days',
-                    style: TextStyle(fontSize: 14)),
-                onTap: () {
-                  // ListDays(context);
-                  _SelectionDay(context);
-                },
-              ),
-              Text(
-                '👉 Food with a \'Use By\' date must be unlisted by midnight of the date.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -369,6 +361,95 @@ class foodscreen extends State<Foodscreen>{
             ],
           ),
         ),
+      ),
+    );
+  }
+
+ void _ShowBottom(BuildContext context) async {
+ showModalBottomSheet(
+     context: context,
+     builder: (BuildContext context){
+       return StatefulBuilder(
+           builder: (BuildContext context,StateSetter setState){
+             return Padding(
+             padding: EdgeInsets.all(8),
+               child: Container(
+                 color: Colors.teal,
+                 child: Column(
+                   children: [
+                     SizedBox(height: 20),
+                     Container(
+                       padding: EdgeInsets.all(16.0),
+                       decoration: BoxDecoration(
+                         color: Colors.white,
+                         borderRadius: BorderRadius.circular(8.0),
+                       ),
+                       child: Column(
+                         children: [
+                           Icon(
+                             Icons.card_giftcard,
+                             size: 50,
+                             color: Colors.teal,
+                           ),
+                           SizedBox(height: 8),
+                           Text(
+                             'Donation Placed',
+                             style: TextStyle(
+                               fontSize: 24,
+                               fontWeight: FontWeight.bold,
+                             ),
+                           ),
+                           SizedBox(height: 8),
+                           GestureDetector(
+                             onTap: () {
+                               // Handle View Donation Details tap
+                             },
+                             child: Text(
+                               'View Donation Details',
+                               style: TextStyle(
+                                 color: Colors.teal,
+                                 decoration: TextDecoration.underline,
+                               ),
+                             ),
+                           ),
+                           SizedBox(height: 20),
+                           buildInfoCard(
+                             context,
+                             'Smile Foundation',
+                             'Galaxy Tower, Lucknow (U.P)',
+                             Icons.phone,
+                           ),
+                           SizedBox(height: 16),
+                           buildInfoCard(
+                             context,
+                             'Pickup Time',
+                             'Wed Jan 2, 12:30 am',
+                             Icons.access_time,
+                           ),
+                           SizedBox(height: 16),
+                           buildInfoCard(
+                             context,
+                             'Pickup address',
+                             'Ishika, Sharma Mention, DP Garden, Lucknow 123456789',
+                             Icons.location_on,
+                           ),
+                         ],
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             );
+           });
+     });
+  }
+  Widget buildInfoCard(
+      BuildContext context, String title, String subtitle, IconData icon) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon, color: Colors.teal),
+        title: Text(title),
+        subtitle: Text(subtitle),
       ),
     );
   }

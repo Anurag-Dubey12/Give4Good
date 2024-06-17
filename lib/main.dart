@@ -3,8 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:give4good/Screen/Auth/SignUp.dart';
 import 'package:give4good/Screen/Home/HomeScreen.dart';
+import 'package:give4good/Screen/Profile/UserProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Screen/IntroScreen.dart';
+import 'package:path_provider/path_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -29,7 +32,11 @@ class MyApp extends StatelessWidget {
   MyApp({required this.seen});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+        providers:[
+          ChangeNotifierProvider(create: (context) => UserProvider())
+        ],
+        child:  MaterialApp(
         title: 'Donation Application',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -37,6 +44,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home:seen ? (user!=null? Homescreen(): Signup()):Introscreen()
-    );
+    ),
+    )
+     ;
   }
 }
